@@ -1,7 +1,7 @@
-# EKG lernen
+# Resqly Academy
 
-Ein interaktiver EKG-Kurs auf Deutsch — aufgebaut wie eine Sprachlern-App:
-kurze Lektionen, ein Lernpfad mit Freischaltung, Herzen, XP und Streak.
+Interaktive Kurse für EKG und Sonographie auf Deutsch — aufgebaut wie eine
+Sprachlern-App: kurze Lektionen, ein Lernpfad mit Freischaltung, Herzen, XP und Streak.
 
 ## Starten
 
@@ -15,7 +15,7 @@ SQLite-Datenbank. Der lokale Fortschritt wird bei der ersten Anmeldung übernomm
 
 `python3 server.py` startet auch die Konto-API. Die Datenbank liegt lokal unter
 `data/academy.sqlite3`; im systemd-Dienst unter
-`/var/lib/ekg-lernen/academy.sqlite3`. Über `RESQLY_DB_PATH` kann der Pfad
+`/var/lib/resqly-academy/academy.sqlite3` (ältere Installationen: `/var/lib/ekg-lernen/`). Über `RESQLY_DB_PATH` kann der Pfad
 geändert werden. Diese Datei muss dauerhaft gespeichert und gesichert werden.
 Alle Kursdomains müssen auf denselben Backend-Dienst zeigen. Die Sitzungscookie
 gilt auf `*.resqly.lu`, sodass ein
@@ -113,8 +113,8 @@ Fall bleibt der Lernstand lokal und die Kontoanzeige wird ausgeblendet.
 Einmalig auf dem Ubuntu-Server:
 
 ```bash
-git clone https://github.com/matti377/EKG-Trainer.git
-cd EKG-Trainer
+git clone https://github.com/matti377/Resqly-Academy.git
+cd Resqly-Academy
 ./deploy.sh
 ```
 
@@ -134,7 +134,7 @@ Einstellungen kommen aus `deploy.env` neben dem Skript (nicht im Repository):
 
 ```bash
 PORT=8000
-SERVICE=ekg-lernen
+SERVICE=resqly-academy
 RUN_USER=ekg
 ```
 

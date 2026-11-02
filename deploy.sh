@@ -14,7 +14,7 @@
 #
 #   PORT=8000
 #   HOST=127.0.0.1      # nur hinter nginx; ohne Proxy weglassen (0.0.0.0)
-#   SERVICE=ekg-lernen
+#   SERVICE=resqly-academy
 #   RUN_USER=ekg
 #
 set -euo pipefail
@@ -28,10 +28,13 @@ cd "$HERE"
 
 PORT="${PORT:-8000}"
 HOST="${HOST:-0.0.0.0}"
-SERVICE="${SERVICE:-ekg-lernen}"
+UNIT_DIR="${UNIT_DIR:-/etc/systemd/system}"
+# Bestehende Installationen unter dem alten Dienstnamen behalten ihren Namen (und ihre Datenbank).
+if [[ -z "${SERVICE:-}" ]]; then
+  if [[ -f "${UNIT_DIR}/ekg-lernen.service" ]]; then SERVICE="ekg-lernen"; else SERVICE="resqly-academy"; fi
+fi
 RESQLY_DB_PATH="${RESQLY_DB_PATH:-/var/lib/${SERVICE}/academy.sqlite3}"
 RUN_USER="${RUN_USER:-$(id -un)}"
-UNIT_DIR="${UNIT_DIR:-/etc/systemd/system}"
 UNIT="${UNIT_DIR}/${SERVICE}.service"
 
 DO_PULL=1
@@ -183,8 +186,8 @@ trap 'rm -f "$TMP_UNIT"' EXIT
 
 cat > "$TMP_UNIT" <<UNIT
 [Unit]
-Description=EKG lernen — Kursseite und Challenge-Server
-Documentation=https://github.com/matti377/EKG-Trainer
+Description=Resqly Academy — Kursseiten und Challenge-Server
+Documentation=https://github.com/matti377/Resqly-Academy
 After=network-online.target
 Wants=network-online.target
 

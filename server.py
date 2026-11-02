@@ -618,7 +618,7 @@ class Server(http.server.ThreadingHTTPServer):
 if __name__ == '__main__':
     ip = lan_ip()
     print('')
-    print('  EKG lernen — Server läuft')
+    print('  Resqly Academy — Server läuft')
     print('  ' + '-' * 42)
     print('  Auf diesem Gerät:   http://localhost:%d/' % PORT)
     if HOST not in ('127.0.0.1', 'localhost'):

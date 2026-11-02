@@ -1483,7 +1483,7 @@ def glue_captions(story):
 
 
 def build(path):
-    doc = Doc(path, title='EKG ++ — Kursskript', author='EKG lernen',
+    doc = Doc(path, title='EKG ++ — Kursskript', author='Resqly Academy',
               subject='Interaktiver EKG-Kurs — Begleitskript')
     story = []
     story += cover_flowables()
