@@ -966,3 +966,23 @@ main { padding: 22px 0 calc(var(--nav-h) + 34px); }
 .application-switcher a:focus-visible { outline:3px solid var(--violet); }
 .topbar-in { gap:10px; }
 @media(max-width:480px) { .topbar-in { gap:5px; } .brand { font-size:15px; } .application-switcher a { padding:7px 6px; font-size:11px; } #top-stats { gap:3px!important; } .topbar .stat { padding:5px; font-size:12px; } }
+
+/* Academy shell on every page: one brand, the switcher and the academy-wide
+   rating (streak, XP, level) that all courses feed. */
+.topbar .academy-brand .brand-mark {
+  background: linear-gradient(150deg, #14243f, #16324e);
+  box-shadow: 0 3px 0 #0a1526; font-size: inherit;
+}
+.academy-brand { white-space: nowrap; }
+#top-stats:empty { display: none; }
+.resqly-stats { display: flex; align-items: center; gap: 6px; text-decoration: none; border-radius: 999px; }
+.resqly-stats:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; }
+.resqly-stats .stat.level { color: var(--violet-dk); background: var(--violet-lt); }
+@media (max-width: 640px) {
+  .academy-brand .brand-name { display: none; }
+  .resqly-stats .stat.gold { display: none; }
+}
+@media (max-width: 420px) {
+  .resqly-stats { gap: 3px; }
+  .resqly-stats .stat.level { display: none; }
+}

@@ -19,7 +19,7 @@ test("quiz of the day: five questions on one theme, explanations, result and str
   await expect(card).toContainText("QUIZ DES TAGES");
   const theme = await card.locator("h2").textContent();
   expect(Q.themes(bank.questions).map((t) => t.name)).toContain(theme);
-  await expect(page.locator(".academy-stats")).toContainText("0");
+  await expect(page.locator(".resqly-stats .stat.fire")).toContainText("0");
   await card.getByRole("link", { name: "Quiz starten" }).click();
   await expect(page).toHaveURL(/#\/tagesquiz$/);
   await expect(page.locator("#nav")).toBeHidden();
@@ -46,7 +46,7 @@ test("quiz of the day: five questions on one theme, explanations, result and str
     /\d von 5 richtig/,
   );
   await expect(page.locator(".academy-review-item")).toHaveCount(Q.DAILY_SIZE);
-  await expect(page.locator(".academy-stats")).toContainText("1");
+  await expect(page.locator(".resqly-stats .stat.fire")).toContainText("1");
   await expect(page.locator(".actionbar")).toHaveCount(0);
   // The first result of the day stands: reopening shows it, not a new attempt.
   await page.reload();

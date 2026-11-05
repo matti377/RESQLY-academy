@@ -51,7 +51,7 @@
   background-size: 40px 40px, 40px 40px, 8px 8px, 8px 8px;
   background-position: center;
 }
-[data-course="sono"] .academy-art { background: linear-gradient(160deg, #102c3c, #0b1f2c); }
+[data-course="roentgen"] .academy-art { background: radial-gradient(ellipse at center, #263654, #0c1527); }
 .academy-trace {
   fill: none; stroke: #3ef58f; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round;
   filter: drop-shadow(0 0 4px rgba(62,245,143,.55));
@@ -153,4 +153,39 @@
   .academy-today, .academy-themes { grid-template-columns: 1fr; }
   .academy-courses, .academy-steps { grid-template-columns: 1fr; }
   .academy-hero { padding: 26px 22px 28px; }
+}
+
+/* Academy-wide rating on the start page. */
+.academy-progress {
+  display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 22px;
+  padding: 22px; margin-bottom: 22px;
+}
+.academy-progress-level { display: flex; gap: 18px; align-items: center; }
+.academy-progress-level > div:last-child { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
+.academy-progress-level h2 { font-size: clamp(20px, 4.4vw, 26px); }
+.academy-progress-level p,
+.academy-progress-facts p { font-size: 13.5px; font-weight: 600; color: var(--muted); }
+.academy-level-badge {
+  flex: 0 0 78px; height: 78px; border-radius: 24px; display: grid; place-content: center; text-align: center;
+  background: linear-gradient(150deg, var(--violet), var(--violet-dk)); color: #fff;
+  box-shadow: 0 4px 0 #3d2a99;
+}
+.academy-level-badge span { font-size: 10px; font-weight: 900; letter-spacing: .14em; opacity: .85; }
+.academy-level-badge b { font-size: 32px; line-height: 1; }
+.academy-progress-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; align-content: center; }
+.academy-progress-facts > div { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.academy-progress-facts b { font-size: 18px; }
+.academy-progress-parts { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; }
+.academy-progress-parts li {
+  display: flex; gap: 8px; align-items: baseline; padding: 6px 12px; border-radius: 999px;
+  background: var(--line-soft); font-size: 13px; font-weight: 700;
+}
+.academy-progress-parts b { font-size: 13px; }
+.academy-course-progress { font-size: 13px; font-weight: 800; color: var(--u-dk); }
+@media (max-width: 720px) {
+  .academy-progress { grid-template-columns: 1fr; }
+}
+@media (max-width: 420px) {
+  .academy-level-badge { flex-basis: 62px; height: 62px; border-radius: 19px; }
+  .academy-level-badge b { font-size: 26px; }
 }

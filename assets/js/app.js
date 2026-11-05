@@ -26,6 +26,8 @@
     try { global.localStorage.setItem(KEY, JSON.stringify(state)); }
     catch (e) { /* egal */ }
     global.ResqlyAccount?.saveProgress('ekg', state);
+    // XP und Lerntage zählen für die Academy-Wertung in der Kopfzeile.
+    global.ResqlyProfile?.report('ekg', state.xp);
   }
 
   function today() {
@@ -99,11 +101,8 @@
   }
 
   function renderTop() {
+    // Serie, XP und Level zeigt die Academy-Kopfzeile für alle Kurse.
     topStats.innerHTML = '';
-    topStats.appendChild(h('span', { class: 'stat fire',
-      html: '<span class="ic">🔥</span>' + state.streak, title: 'Tage in Folge' }));
-    topStats.appendChild(h('span', { class: 'stat gold',
-      html: '<span class="ic">⭐</span>' + state.xp, title: 'Erfahrungspunkte' }));
     topStats.appendChild(h('button', {
       class: 'iconbtn', title: 'Einstellungen', 'aria-label': 'Einstellungen',
       html: '⚙️', onclick: openSettings
@@ -1888,7 +1887,7 @@
         soundBtn, unlockBtn,
         h('button', { class: 'btn wide bad', text: 'Fortschritt zurücksetzen', onclick: function () {
           bg.remove();
-          modal('Wirklich zurücksetzen?', 'Alle Lektionen, XP und die Streak werden gelöscht. Das lässt sich nicht rückgängig machen.', [
+          modal('Wirklich zurücksetzen?', 'Alle Lektionen und die XP dieses Kurses werden gelöscht. Dein Academy-Level und deine Serie bleiben. Das lässt sich nicht rückgängig machen.', [
             { t: 'Abbrechen', c: 'btn gray', f: null },
             { t: 'Löschen', c: 'btn bad', f: function () {
               state = Object.assign({}, DEFAULT_STATE);

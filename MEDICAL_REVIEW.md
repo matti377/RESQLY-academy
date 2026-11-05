@@ -55,3 +55,23 @@ Reviewstatus ist in dieser Arbeitsversion informativ und blockiert weder Clips n
 5. `npm test`, `npm run validate:medical`, Browserprüfungen und zuletzt `npm run validate:publication` ausführen. Der letzte Befehl schlägt im aktuellen Entwurfsstand absichtlich fehl.
 
 Die technische Freigabeprüfung kann nur Vollständigkeit prüfen; die Echtheit eines eingetragenen Reviewers oder Rechtebelegs bleibt menschliche Verantwortung.
+
+## Neuer Röntgen-Kurs (02.11.2026)
+
+12 Lektionen, 37 Übungen und fünf Originalaufnahmen aus vier Untersuchungen.
+Status: `awaiting-medical-review`. Medizinische Quellen stehen bei jeder
+Lektion; Lizenzen und verwendete Dateiversionen in
+[ROENTGEN.md](docs/media/ROENTGEN.md).
+
+Vor medizinischer Veröffentlichung insbesondere prüfen:
+
+- Bildbefunde und Toleranzbereiche der freien Bildmarkierung am Radius, an der linken
+  Klavikula sowie an Tibia und Fibula.
+- Richtungsangaben beim Colles-Muster, Gelenkbeteiligung und Formulierungen
+  zu den Grenzen einzelner Projektionen.
+- Umgang mit klinischem Frakturverdacht bei unauffälligem Erstbild gemäß
+  ACR, einschließlich der situationsabhängigen weiteren Bildgebung.
+
+Die Originalmarkierungen der Radiusaufnahme bleiben ausdrücklich kenntlich.
+Die Kurswiederholung nutzt bekannte Trainingsbilder, keine behauptete
+Validierung der Befundkompetenz an unbekannten Fällen.

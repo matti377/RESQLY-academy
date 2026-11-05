@@ -1,97 +1,42 @@
-const { test } = require("node:test");
-const assert = require("node:assert/strict");
-const P = require("../assets/js/platform.js");
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const P = require('../assets/js/platform.js');
 const loc = (url) => new URL(url);
-test("the root page is the academy unless an old entry point names a course", () => {
-  for (const url of [
-    "https://academy.resqly.lu/",
-    "http://localhost:8000/",
-    "http://localhost:8000/?app=academy",
-    "http://localhost:8000/?app=constructor",
-    "file:///tmp/index.html",
-  ])
-    assert.equal(P.legacy(loc(url)), null);
-  assert.equal(P.legacyURL(loc("http://localhost:8000/#/pfad")), null);
+test('academy remains the root; EKG and Röntgen have explicit course entries', () => {
+  for (const url of ['https://academy.resqly.lu/', 'http://localhost:8000/', 'http://localhost/?app=constructor', 'file:///tmp/index.html']) assert.equal(P.legacy(loc(url)), null);
+  assert.equal(P.legacyURL(loc('https://ekg.resqly.lu/#/lektion/l1_1')), 'https://ekg.resqly.lu/ekg/#/lektion/l1_1');
+  assert.equal(P.legacyURL(loc('http://localhost/?app=roentgen')), '/roentgen/#/pfad');
+  assert.equal(P.legacyURL(loc('https://roentgen.resqly.lu/')), '/roentgen/#/pfad');
+  assert.equal(P.legacy(loc('https://ekg.resqly.lu/?app=roentgen')), 'ekg');
 });
-test("course domains take precedence over query overrides", () => {
-  assert.equal(P.legacy(loc("https://sono.resqly.lu/?app=ekg#/pfad")), "sono");
-  assert.equal(P.legacy(loc("https://ekg.resqly.lu/?app=sono#/pfad")), "ekg");
-  assert.equal(P.legacy(loc("https://SONO.RESQLY.LU/")), "sono");
+test('Sono entries return to academy, including old domains and file previews', () => {
+  assert.equal(P.legacyURL(loc('https://sono.resqly.lu/?app=ekg#/home')), 'https://academy.resqly.lu/');
+  assert.equal(P.legacyURL(loc('http://localhost/?app=sono#/modul/lunge')), '/');
+  assert.equal(P.legacyURL(loc('http://sono.localhost/')), '/');
+  assert.equal(P.legacyURL(loc('file:///tmp/index.html?app=sono#/home')), 'index.html');
+  assert.equal(P.legacy(loc('https://ekg.resqly.lu/?app=sono')), 'ekg');
+  assert.throws(() => P.switchURL('sono', loc('http://localhost/'), 'ekg'));
 });
-test("old entry points are forwarded to the course folder with their route", () => {
-  assert.equal(
-    P.legacyURL(loc("https://ekg.resqly.lu/#/lektion/l1_1")),
-    "https://ekg.resqly.lu/ekg/#/lektion/l1_1",
-  );
-  assert.equal(
-    P.legacyURL(loc("https://ekg.resqly.lu/")),
-    "https://ekg.resqly.lu/ekg/#/pfad",
-  );
-  assert.equal(
-    P.legacyURL(loc("http://localhost:8000/?app=sono#/quiz/lunge")),
-    "/sono/#/quiz/lunge",
-  );
-  assert.equal(
-    P.legacyURL(loc("http://sono.localhost:8000/")),
-    "/sono/#/home",
-  );
-  assert.equal(
-    P.legacyURL(loc("file:///tmp/index.html?app=sono#/home")),
-    "sono/index.html#/home",
-  );
+test('course switching works without provisioning a new domain', () => {
+  assert.equal(P.switchURL('roentgen', loc('https://ekg.resqly.lu/ekg/'), 'ekg'), '/roentgen/#/pfad');
+  assert.equal(P.switchURL('ekg', loc('https://roentgen.resqly.lu/roentgen/'), 'roentgen'), 'https://ekg.resqly.lu/ekg/#/pfad');
+  assert.equal(P.switchURL('roentgen', loc('http://localhost/'), 'academy'), '/roentgen/#/pfad');
+  assert.equal(P.switchURL('roentgen', loc('file:///tmp/ekg/index.html'), 'ekg'), '../roentgen/index.html#/pfad');
+  assert.equal(P.switchURL('ekg', loc('file:///tmp/index.html'), 'academy'), 'ekg/index.html#/pfad');
+  assert.throws(() => P.switchURL('other', loc('http://localhost/')));
 });
-test("course links use folders, the dedicated domains and file previews", () => {
-  assert.equal(
-    P.switchURL("ekg", loc("https://academy.resqly.lu/"), "academy"),
-    "/ekg/#/pfad",
-  );
-  assert.equal(
-    P.switchURL("sono", loc("http://localhost:8000/ekg/"), "ekg"),
-    "/sono/#/home",
-  );
-  assert.equal(
-    P.switchURL("sono", loc("https://ekg.resqly.lu/ekg/"), "ekg"),
-    "https://sono.resqly.lu/sono/#/home",
-  );
-  assert.equal(
-    P.switchURL("ekg", loc("https://sono.resqly.lu/sono/"), "sono"),
-    "https://ekg.resqly.lu/ekg/#/pfad",
-  );
-  assert.equal(
-    P.switchURL("ekg", loc("file:///tmp/index.html"), "academy"),
-    "ekg/index.html#/pfad",
-  );
-  assert.equal(
-    P.switchURL("sono", loc("file:///tmp/ekg/index.html"), "ekg"),
-    "../sono/index.html#/home",
-  );
-  assert.throws(() => P.switchURL("other", loc("http://localhost/"), "ekg"));
+test('course deep links, empty folders and hash precedence', () => {
+  for (const app of ['ekg', 'roentgen']) {
+    assert.equal(P.route(loc('http://localhost/' + app + '/'), app), 'pfad');
+    assert.equal(P.route(loc('http://localhost/' + app + '/index.html'), app), 'pfad');
+    assert.equal(P.route(loc('http://localhost/' + app + '/lektion/bildstart'), app), 'lektion/bildstart');
+    assert.equal(P.route(loc('http://localhost/' + app + '/atlas#/trainer'), app), 'trainer');
+  }
+  for (const route of ['pfad', 'trainer', 'bibliothek', 'labor', 'ableitungen', 'challenge', 'lektion/test']) assert.equal(P.route(loc('https://ekg.resqly.lu/ekg/#/' + route), 'ekg'), route);
 });
-test("every existing EKG hash route remains untouched", () => {
-  for (const route of [
-    "pfad",
-    "trainer",
-    "bibliothek",
-    "labor",
-    "ableitungen",
-    "challenge",
-    "lektion/test",
-  ])
-    assert.equal(
-      P.route(loc("https://ekg.resqly.lu/ekg/#/" + route), "ekg"),
-      route,
-    );
-  assert.equal(P.route(loc("http://localhost/ekg/"), "ekg"), "pfad");
-  assert.equal(P.route(loc("http://localhost/ekg/index.html"), "ekg"), "pfad");
-});
-test("SONO deep links, empty folder and hash precedence", () => {
-  assert.equal(
-    P.route(loc("http://localhost/sono/lektion/lunge-06"), "sono"),
-    "lektion/lunge-06",
-  );
-  assert.equal(P.route(loc("https://sono.resqly.lu/sono/"), "sono"), "home");
-  assert.equal(
-    P.route(loc("https://sono.resqly.lu/sono/atlas#/simulator"), "sono"),
-    "simulator",
-  );
+test('every page links home to the academy start page', () => {
+  assert.equal(P.homeURL(loc('http://localhost/ekg/'), 'ekg'), '/#/home');
+  assert.equal(P.homeURL(loc('https://ekg.resqly.lu/ekg/'), 'ekg'), 'https://academy.resqly.lu/#/home');
+  assert.equal(P.homeURL(loc('file:///tmp/roentgen/index.html'), 'roentgen'), '../index.html#/home');
+  assert.equal(P.homeURL(loc('file:///tmp/index.html'), 'academy'), 'index.html#/home');
 });

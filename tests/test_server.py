@@ -167,8 +167,9 @@ class ApplicationRoutingTest(unittest.TestCase):
         pages = {'/': 'academy', '/index.html': 'academy',
                  '/ekg/': 'ekg', '/ekg': 'ekg', '/ekg/labor': 'ekg',
                  '/labor': 'ekg', '/lektion/l1-1': 'ekg',
-                 '/sono/': 'sono', '/sono': 'sono', '/sono/lektion/lunge-06': 'sono',
-                 '/simulator': 'sono'}
+                 '/roentgen/': 'roentgen', '/roentgen': 'roentgen',
+                 '/roentgen/lektion/bildstart': 'roentgen',
+                 '/roentgen/atlas/clavicle': 'roentgen', '/roentgen/runde/mix': 'roentgen'}
         for path, app in pages.items():
             with self.subTest(path=path), urlopen(self.base + path) as response:
                 self.assertEqual(response.status, 200)
@@ -179,6 +180,11 @@ class ApplicationRoutingTest(unittest.TestCase):
             self.assertEqual(response.status, 200)
         with urlopen(self.base + '/assets/js/sono/core.js') as response:
             self.assertIn(b'probeFrame', response.read())
+        for path in ('/sono/', '/sono/lektion/lunge-06', '/simulator'):
+            with self.subTest(hidden=path), urlopen(self.base + path) as response:
+                body = response.read()
+                self.assertIn(b'location.replace', body)
+                self.assertNotIn(b'data-application="sono"', body)
 
     def test_missing_assets_and_unknown_routes_do_not_return_html_shell(self):
         for path in ('/assets/missing.js', '/missing', '/sono/not-real', '/ekg/not-real', '/api/not-real'):

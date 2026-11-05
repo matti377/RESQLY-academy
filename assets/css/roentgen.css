@@ -1,0 +1,122 @@
+[data-application="roentgen"] { --brand: #7c5cff; --brand-dk: #5c3fd4; --brand-lt: #eee9ff; }
+[data-application="roentgen"] [hidden] { display: none !important; }
+[data-application="roentgen"] a.btn { text-decoration: none; }
+[data-application="roentgen"] .brand-mark { background: #7c5cff; box-shadow: 0 3px 0 #5c3fd4; font-size: 22px; }
+[data-application="roentgen"] .brand small { font-size: 11px; color: var(--muted); white-space: nowrap; }
+#top-stats { display: flex; align-items: center; gap: 8px; }
+.xr-hero { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 28px; align-items: center; background: #14243f; }
+.xr-hero::after { display: none; }
+.xr-hero h1 { max-width: 17ch; margin: 12px 0; }
+.xr-hero .xr-eyebrow { color: #c4b5fd; font-size: 11px; font-weight: 900; letter-spacing: .12em; }
+.xr-preview { border: 1px solid #4a5975; border-radius: 18px; background: #0c1527; padding: 14px; transform: rotate(2deg); }
+.xr-preview-label { display: block; color: #aebed6; font-size: 9px; letter-spacing: .1em; font-weight: 800; text-align: center; }
+.xr-preview-films { display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px; height: 156px; margin: 12px 0; }
+.xr-preview-films img { display: block; width: 100%; height: 156px; object-fit: contain; background: #070a10; border-radius: 8px; }
+.xr-progress { display: flex; align-items: center; gap: 16px; padding: 16px 20px; margin: 18px 0 26px; font-size: 13px; font-weight: 800; }
+.xr-progress progress { flex: 1; width: 60px; height: 12px; appearance: none; border: 0; border-radius: 999px; overflow: hidden; background: var(--brand-lt); accent-color: var(--brand); }
+.xr-progress progress::-webkit-progress-bar { background: var(--brand-lt); border-radius: 999px; }
+.xr-progress progress::-webkit-progress-value { background: var(--brand); border-radius: 999px; }
+.xr-progress progress::-moz-progress-bar { background: var(--brand); border-radius: 999px; }
+.unit-head h2 { font-size: 18px; margin-bottom: 4px; }
+[data-application="roentgen"] .path-row { width: min(200px, calc(100% - 100px)); }
+.xr-heading { margin: 8px 0 24px; }
+.xr-heading h1 { font-size: clamp(24px, 5vw, 32px); margin-bottom: 12px; }
+.xr-muted { color: var(--muted); max-width: 65ch; }
+.xr-footnote { text-align: center; font-size: 11px; color: var(--muted); margin: 30px 0 0; }
+.xr-training-grid, .xr-atlas-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.xr-training-card { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+.xr-training-card h2 { font-size: 21px; }
+.xr-training-card p { color: var(--muted); font-weight: 600; }
+.xr-training-card .btn { margin-top: auto; }
+.xr-card-icon { font-size: 36px; }
+.xr-empty-tag { padding: 10px 12px; background: var(--line-soft); border-radius: 12px; color: var(--muted); font-size: 13px; font-weight: 800; }
+.xr-viewer { border: 1px solid #344461; border-radius: 18px; overflow: hidden; background: #090f1a; margin: 0 0 22px; min-width: 0; }
+.xr-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding: 12px 14px; background: #14243f; color: #d4e2f6; font-size: 12px; font-weight: 800; }
+.xr-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.xr-tools .btn-ghost { padding: 6px 8px; color: #ebe5ff; background: #243654; border: 1px solid #576481; box-shadow: none; font-size: 12px; }
+.xr-tools .btn-ghost:hover { background: #35476b; color: white; }
+.xr-contrast { display: flex; align-items: center; gap: 7px; }
+.xr-contrast input { width: 75px; accent-color: #a78bfa; }
+.xr-film-scroll { overflow: auto; max-height: 560px; padding: 14px; text-align: center; }
+.xr-film { position: relative; max-width: 100%; display: inline-block; vertical-align: top; text-align: left; }
+.xr-film img { display: block; width: 100%; height: auto; }
+.xr-viewer figcaption { padding: 10px 14px; font-size: 10px; line-height: 1.6; color: #aebdd3; background: #14243f; }
+.xr-viewer figcaption a { color: #d0c2ff; }
+.xr-image-error { color: #fff; padding: 18px; }
+.xr-spot-surface { cursor: crosshair; }
+.xr-spot-surface[aria-disabled="true"] { cursor: default; }
+.xr-pick, .xr-solution { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; background: transparent; pointer-events: none; }
+.xr-pick { width: 24px; height: 24px; border: 2px solid #c4b5fd; box-shadow: 0 0 0 1px #14243f; }
+.xr-pick.right { border-color: #58ef8f; }
+.xr-pick.wrong { border-color: #ff7070; }
+.xr-solution { border: 2px dashed #58ef8f; box-shadow: 0 0 0 1px #14243f; }
+.xr-spot-status { padding: 8px 14px; background: #14243f; color: #d4e2f6; font-size: 12px; }
+.xr-spot-surface:focus-visible, .opt:focus-visible, .chip:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
+.xr-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.xr-filters [aria-pressed="true"] { background: var(--brand-lt); border-color: var(--brand); color: var(--brand-dk); }
+.xr-atlas-card { display: flex; flex-direction: column; gap: 8px; color: var(--ink); text-decoration: none; transition: border-color .15s; }
+.xr-atlas-card:hover { border-color: var(--brand); }
+.xr-atlas-card h2 { font-size: 18px; }
+.xr-atlas-card p { font-size: 12px; color: var(--muted); }
+.xr-thumbnail { height: 170px; padding: 8px; margin-bottom: 6px; border-radius: 12px; background: #090f1a; }
+.xr-thumbnail img { width: 100%; height: 100%; object-fit: contain; }
+.xr-atlas-cta { font-size: 13px; font-weight: 900; color: var(--brand-dk); margin-top: 8px; }
+.xr-atlas-finding { display: grid; gap: 12px; }
+.xr-atlas-finding h2 { font-size: 21px; }
+.xr-atlas-finding h3 { font-size: 15px; color: var(--brand-dk); margin-top: 8px; }
+.xr-checklist { display: grid; gap: 14px; }
+.xr-checklist .card { display: flex; align-items: flex-start; gap: 16px; }
+.xr-check-number { flex: 0 0 40px; height: 40px; display: grid; place-items: center; border-radius: 13px; background: var(--brand-lt); color: var(--brand-dk); font-weight: 900; font-size: 20px; }
+.xr-checklist h2 { font-size: 19px; margin-bottom: 8px; }
+.xr-checklist p { color: var(--muted); font-size: 14px; }
+.xr-refs { border: 1px solid var(--line); padding: 14px 16px; border-radius: 14px; font-size: 12px; margin-top: 18px; color: var(--muted); }
+.xr-refs summary { cursor: pointer; font-weight: 800; }
+.xr-refs p { margin-top: 8px; }
+.xr-intro { font-size: 17px; margin-bottom: 20px; max-width: 68ch; }
+.xr-teaching { display: grid; gap: 12px; margin-bottom: 26px; }
+.xr-teach-card { padding: 20px 22px; box-shadow: none; }
+.xr-teaching .xr-teach-card h2 { font-size: 18px; color: var(--brand-dk); margin-bottom: 9px; }
+.xr-teach-card p { font-size: 15px; line-height: 1.7; }
+.xr-example-title { font-size: 18px; margin-bottom: 14px; }
+.xr-patterns { margin: 0 0 20px; border-radius: 16px; border: 2px solid var(--line); background: white; padding: 12px; }
+.xr-patterns svg { width: 100%; display: block; }
+.xr-patterns figcaption { font-size: 11px; color: var(--muted); text-align: center; }
+.xr-stage { max-width: 820px; margin: 0 auto; padding-bottom: 110px; }
+.xr-stage .keybox h2, .keybox h2 { font-size: 15px; color: var(--brand-dk); margin-bottom: 6px; }
+.xr-in-session .lesson-top { top: 62px; }
+.xr-in-session .hearts { color: var(--heart); }
+.xr-feedback { display: none; padding: 18px 20px; border: 2px solid; border-radius: 16px; margin-top: 20px; scroll-margin-bottom: 115px; }
+.xr-feedback.good { display: block; background: var(--ok-lt); border-color: #b6ebc4; }
+.xr-feedback.bad { display: block; background: var(--bad-lt); border-color: #ffc3c3; }
+.xr-feedback h2 { font-size: 18px; margin-bottom: 8px; }
+.xr-feedback.good h2 { color: var(--ok-dk); }
+.xr-feedback.bad h2 { color: var(--bad-dk); }
+.xr-feedback p { font-size: 14px; }
+.xr-feedback p + p { margin-top: 8px; }
+.xr-bar-note { font-size: 12px; font-weight: 700; color: var(--muted); }
+.xr-order-result { display: grid; gap: 8px; margin: 0 0 18px; padding: 16px 16px 16px 38px; background: var(--brand-lt); border-radius: 14px; min-height: 48px; font-weight: 800; font-size: 14px; }
+.xr-order-result:empty { border: 2px dashed #c4b5fd; }
+.xr-done-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 28px; }
+@media (max-width: 720px) {
+  .xr-hero { grid-template-columns: 1fr; gap: 22px; }
+  .xr-hero h1 { max-width: none; }
+  .xr-preview { max-width: 400px; transform: none; }
+  .xr-preview-films, .xr-preview-films img { height: 110px; }
+}
+@media (max-width: 640px) {
+  [data-application="roentgen"] .brand small { display: none; }
+  [data-application="roentgen"] .topbar { height: auto; min-height: 62px; padding: 8px 0; }
+  [data-application="roentgen"] .topbar-in { flex-wrap: wrap; }
+  [data-application="roentgen"] #top-stats { order: 4; flex-basis: 100%; justify-content: center; }
+  [data-application="roentgen"] #top-stats .stat { padding: 3px 10px; font-size: 12px; }
+  .xr-in-session .lesson-top { top: 98px; }
+  .xr-training-grid, .xr-atlas-grid { grid-template-columns: 1fr; }
+  .xr-progress { flex-wrap: wrap; gap: 10px; padding: 14px; }
+  .xr-progress > span:first-child { flex-basis: 100%; }
+  .xr-bar-note { display: none; }
+  .xr-film-scroll { max-height: 460px; padding: 10px; }
+  .xr-hero { padding: 24px 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-application="roentgen"] *, [data-application="roentgen"] *::before { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

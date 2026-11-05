@@ -1,6 +1,6 @@
 # Resqly Academy
 
-Interaktive Kurse für EKG und Sonographie auf Deutsch — aufgebaut wie eine
+Interaktive Kurse für EKG und Röntgen auf Deutsch — aufgebaut wie eine
 Sprachlern-App: kurze Lektionen, ein Lernpfad mit Freischaltung, Herzen, XP und Streak.
 
 ## Starten
@@ -8,8 +8,33 @@ Sprachlern-App: kurze Lektionen, ein Lernpfad mit Freischaltung, Herzen, XP und 
 `ekg/index.html` im Browser öffnen (oder `index.html`, die Kursübersicht der
 Resqly Academy). Es gibt keinen Build-Schritt und keine Abhängigkeiten — reines
 HTML, CSS und JavaScript. Ohne Anmeldung bleibt der Fortschritt im Browser.
-Mit einem Konto synchronisiert der Server Academy, EKG und Sono über dieselbe
+Mit einem Konto synchronisiert der Server Academy, EKG und Röntgen über dieselbe
 SQLite-Datenbank. Der lokale Fortschritt wird bei der ersten Anmeldung übernommen.
+
+## Röntgen by Resqly
+
+`http://localhost:8000/roentgen/` oder `roentgen/index.html` direkt öffnen.
+Röntgen ersetzt Sono in der Kursübersicht und im gemeinsamen Umschalter.
+
+- Jede Lektion beginnt mit einer Erklärungsseite: Begriffe, Bildmerkmale und
+  Einordnung der anschließend geprüften Inhalte, einschließlich des Colles-Musters.
+- Vier Einheiten mit zwölf kurzen Lektionen und 37 Übungen: Bilder zuordnen,
+  systematisch durchmustern, Normalbild erkennen, Frakturen lokalisieren und
+  beschreiben, Begleitverletzungen und Aussagegrenzen beachten.
+- Fünf lokal gebündelte Originalaufnahmen aus vier Untersuchungen (Handgelenk,
+  Klavikula, Unterschenkel), mit Zoom, Kontrast und freiem Anklicken gesuchter Bildstellen.
+- Derselbe Lernstil wie EKG: Lernpfad mit Freischaltung, fünf Herzen pro Runde,
+  sofortige Erklärungen, Fehlerwiederholung, 10 XP plus 5 XP für fehlerfreie
+  Runden und tägliche Serie. Fünf Fehler beenden den Versuch ohne Freischaltung.
+- Trainer mit gemischten Aufgaben aus freigeschalteten Lektionen und gezielter
+  Fehlerwiederholung; Bildatlas und Checkliste mit Quellen.
+- Fortschritt lokal unter `roentgen-learning-v1`; mit Konto synchronisiert über
+  `/api/progress/roentgen`. Alte Sono-Kontodaten bleiben erhalten.
+
+Dateien: `assets/js/roentgen/{content,core,app}.js`,
+`assets/css/roentgen.css`, `roentgen/index.html`.
+[Medienherkunft und Lizenzen](docs/media/ROENTGEN.md).
+Die Inhalte sind quellenbasiert, die fachärztliche Prüfung steht aus.
 
 ## Konto und gemeinsamer Lernstand
 
@@ -19,7 +44,7 @@ SQLite-Datenbank. Der lokale Fortschritt wird bei der ersten Anmeldung übernomm
 geändert werden. Diese Datei muss dauerhaft gespeichert und gesichert werden.
 Alle Kursdomains müssen auf denselben Backend-Dienst zeigen. Die Sitzungscookie
 gilt auf `*.resqly.lu`, sodass ein
-Konto auf Academy, EKG und Sono verwendet werden kann.
+Konto auf Academy, EKG und Röntgen verwendet werden kann.
 
 API für spätere App-Anbindung (JSON):
 
@@ -30,7 +55,8 @@ API für spätere App-Anbindung (JSON):
 | `POST` | `/api/account/logout` | Sitzung beenden |
 | `GET` | `/api/account/me` | Angemeldetes Konto lesen |
 | `GET` | `/api/progress` | Lernstand aller Fachgebiete lesen |
-| `GET`, `PUT` | `/api/progress/{academy,ekg,sono}` | Lernstand eines Fachgebiets lesen oder speichern |
+| `GET`, `PUT` | `/api/progress/{academy,ekg,roentgen}` | Lernstand eines Fachgebiets lesen oder speichern |
+| `GET`, `PUT` | `/api/progress/profile` | Gemeinsame Academy-Wertung: XP je Kurs und Lerntage (Level, Serie, Tagesziel) |
 
 Browser verwenden eine HttpOnly-Sitzungscookie. Native Apps können beim
 Registrieren oder Anmelden `"client":"native"` senden und erhalten dann ein
@@ -267,11 +293,12 @@ keine Leitlinie und keine ärztliche Beurteilung. Die Kurven sind
 mathematisch erzeugt und damit idealisiert — ein echtes Patienten-EKG ist
 unruhiger und vielgestaltiger.
 
-## SONO by Resqly — zweite Anwendung im selben Repository
+## Archivierter SONO-Kurs (ausgeblendet)
 
-Zusätzlich zum EKG-Kurs enthält das Projekt eine eigenständige
-SONO-Lernoberfläche im Ordner `sono/`. Der gemeinsame Umschalter ist auf beiden
-Anwendungen sichtbar.
+Der bisherige SONO-Code bleibt zur Aufbewahrung vorhandener Lernstände im
+Repository. SONO ist vollständig aus Kursübersicht und Umschalter entfernt;
+der Einstieg `sono/index.html` leitet zur Academy zurück. Die folgenden
+Angaben dokumentieren den archivierten Kurs.
 
 ```bash
 python3 server.py
@@ -302,15 +329,17 @@ eigener `index.html`:
 ```
 index.html        Resqly Academy     http://localhost:8000/
 ekg/index.html    EKG-Kurs           http://localhost:8000/ekg/
-sono/index.html   SONO-Kurs          http://localhost:8000/sono/
+roentgen/index.html Röntgen-Kurs     http://localhost:8000/roentgen/
 assets/           gemeinsames Design, Skripte und Medien aller Kurse
 ```
 
 Neben den Kurslinks bietet die Startseite das **Quiz des Tages** und das
 **Themen-Quiz** (siehe unten). Die
 bisherigen Adressen funktionieren weiter: `ekg.resqly.lu/` und
-`sono.resqly.lu/` sowie alte `?app=`-Links werden im Browser in den passenden
-Ordner weitergeleitet, die Route (`#/…`) bleibt erhalten.
+`roentgen.resqly.lu/` (bei konfigurierter Domain) sowie alte EKG-Links werden im
+Browser in den passenden Ordner weitergeleitet. Röntgen funktioniert auch auf
+der bestehenden Domain unter `/roentgen/`, ohne zusätzliche DNS-Konfiguration.
+Alte SONO-Einstiege führen zur Academy zurück.
 
 Domain, TLS und Proxy richtet der Betreiber wie bei SONO ein, siehe
 [Domainkonfiguration](docs/SONO_DEPLOYMENT.md#academy-startseite-und-kursordner).

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de" data-application="roentgen">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Röntgen by Resqly — Bilder lesen, Frakturen erkennen</title>
+<meta name="description" content="Röntgenbilder verstehen: 12 kurze Lektionen mit echten Aufnahmen, interaktiven Bildaufgaben, Fraktur-Trainer, Herzen und XP.">
+<meta name="theme-color" content="#eee9ff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+const resqlyAssetRoot = location.protocol === "file:" ? "../" : "/";
+for (const file of ["style.css?v=31", "roentgen.css?v=3"]) {
+  const sheet = document.createElement("link");
+  sheet.rel = "stylesheet"; sheet.href = resqlyAssetRoot + "assets/css/" + file;
+  document.head.append(sheet);
+}
+</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%237c5cff'/%3E%3Cpath d='M32 20q-15 0-12 14t14 8l24 24q-8 12 5 15t16-10q10-12-4-17L50 30q2-14-10-14Z' fill='white'/%3E%3C/svg%3E">
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+  <a class="brand academy-brand" href="/#/home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5L12 5l10 4.5-10 4.5zM6.5 12v4.5q5.5 3.5 11 0V12"/></svg></span><span class="brand-name">Resqly Academy</span></a>
+  <div id="top-stats"></div>
+</div></header>
+<main><div class="app" id="app"></div></main>
+<nav class="nav" id="nav" aria-label="Hauptnavigation"></nav>
+<noscript>Bitte JavaScript aktivieren, um den interaktiven Kurs zu verwenden.</noscript>
+<script>
+const platformScript = document.createElement("script");
+platformScript.src = resqlyAssetRoot + "assets/js/platform.js?v=3";
+platformScript.onload = function () {
+  const script = document.createElement("script");
+  script.src = resqlyAssetRoot + "assets/js/bootstrap.js?v=5";
+  document.body.append(script);
+};
+platformScript.onerror = function () { document.getElementById("app").textContent = "Der Kurs konnte nicht geladen werden. Bitte neu laden."; };
+document.body.append(platformScript);
+</script>
+</body></html>

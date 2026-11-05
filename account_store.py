@@ -10,7 +10,9 @@ import time
 from contextlib import contextmanager
 
 
-SPECIALTIES = frozenset(('academy', 'ekg', 'sono'))
+SPECIALTIES = frozenset(('academy', 'ekg', 'sono', 'roentgen', 'profile'))
+PROFILE_SOURCES = ('academy', 'ekg', 'roentgen')
+PROFILE_DAYS = 400
 SESSION_SECONDS = 30 * 24 * 3600
 LOGIN_WINDOW_SECONDS = 15 * 60
 MAX_LOGIN_ATTEMPTS = 10
@@ -58,7 +60,7 @@ def merge_progress(specialty, previous, incoming):
             'read': {**_bool_map(previous.get('read')), **_bool_map(incoming.get('read'))},
             'passed': {**_bool_map(previous.get('passed')), **_bool_map(incoming.get('passed'))},
         }
-    if specialty == 'ekg':
+    if specialty in ('ekg', 'roentgen'):
         done = {}
         for source in (previous.get('done'), incoming.get('done')):
             if not isinstance(source, dict):
@@ -69,7 +71,7 @@ def merge_progress(specialty, previous, incoming):
                 best = _number(result.get('best'), 0, 100)
                 done[key] = {'best': max(best, done.get(key, {}).get('best', 0))}
         latest = incoming if _day_key(incoming.get('lastDay')) >= _day_key(previous.get('lastDay')) else previous
-        return {
+        result = {
             'done': done,
             'xp': max(_number(previous.get('xp')), _number(incoming.get('xp'))),
             'streak': _number(latest.get('streak'), 0, 100_000),
@@ -78,6 +80,34 @@ def merge_progress(specialty, previous, incoming):
             'unlockAll': incoming.get('unlockAll') if type(incoming.get('unlockAll')) is bool else previous.get('unlockAll', False),
             'mmPerSec': incoming.get('mmPerSec') if incoming.get('mmPerSec') in (25, 50) else previous.get('mmPerSec', 25),
         }
+        if specialty == 'roentgen':
+            result = {key: result[key] for key in ('done', 'xp', 'streak', 'lastDay')}
+            answers = {}
+            for source in (previous.get('answers'), incoming.get('answers')):
+                if not isinstance(source, dict):
+                    continue
+                for key, answer in source.items():
+                    if not isinstance(key, str) or not ID_RE.fullmatch(key) or not isinstance(answer, dict):
+                        continue
+                    count = _number(answer.get('n'), 0, 100_000)
+                    if count >= answers.get(key, {}).get('n', -1):
+                        answers[key] = {'n': count, 'last': answer.get('last') is True}
+            result.update({'version': 1, 'answers': answers})
+        return result
+    if specialty == 'profile':
+        # Academy-wide rating: XP per course and XP per learning day only grow.
+        xp, days = {}, {}
+        for source in (previous, incoming):
+            if isinstance(source.get('xp'), dict):
+                for key in PROFILE_SOURCES:
+                    value = _number(source['xp'].get(key))
+                    if value:
+                        xp[key] = max(xp.get(key, 0), value)
+            if isinstance(source.get('days'), dict):
+                for key, value in source['days'].items():
+                    if isinstance(key, str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}', key):
+                        days[key] = max(days.get(key, 0), _number(value, 0, 1_000_000))
+        return {'version': 1, 'xp': xp, 'days': dict(sorted(days.items())[-PROFILE_DAYS:])}
     if specialty == 'academy':
         answers = {}
         for source in (previous.get('answers'), incoming.get('answers')):

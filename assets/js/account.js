@@ -1,16 +1,18 @@
-/* Shared account control and progress sync for Academy, EKG and SONO. */
+/* Shared account control and progress sync for Academy and its courses. */
 (function (global) {
   "use strict";
   const keys = {
     academy: "resqly-academy-v1",
     ekg: "ekg-lernen-v1",
     sono: "sono-learning-v1",
+    roentgen: "roentgen-learning-v1",
+    profile: "resqly-profile-v1",
   };
   const ownerKey = "resqly-progress-owner";
   let user = null;
   let app = null;
   let button = null;
-  let pendingSave = null;
+  const pendingSave = {}; // specialty -> latest unsent snapshot
   let saving = false;
 
   function storage() {
@@ -101,7 +103,7 @@
       const email = document.createElement("p");
       email.textContent = user.email;
       const info = document.createElement("p");
-      info.textContent = "Dein Fortschritt für Academy, EKG und Sono wird in diesem Konto gespeichert.";
+      info.textContent = "Dein Fortschritt für Academy, EKG und Röntgen wird in diesem Konto gespeichert.";
       const logout = document.createElement("button");
       logout.type = "button";
       logout.className = "btn gray wide";
@@ -194,15 +196,16 @@
     refreshButton();
   }
 
+  // Every page saves its own course and the academy-wide profile.
   function saveProgress(specialty, data) {
-    if (!user || specialty !== app) return;
-    pendingSave = JSON.stringify(data);
+    if (!user || (specialty !== app && specialty !== "profile")) return;
+    pendingSave[specialty] = JSON.stringify(data);
     if (saving) return;
     saving = true;
     (async () => {
-      while (pendingSave) {
-        const snapshot = pendingSave;
-        pendingSave = null;
+      for (let specialty; (specialty = Object.keys(pendingSave)[0]); ) {
+        const snapshot = pendingSave[specialty];
+        delete pendingSave[specialty];
         try {
           await request("progress/" + specialty, { method: "PUT", body: snapshot });
         } catch (_) {

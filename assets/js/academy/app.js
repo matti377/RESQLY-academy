@@ -8,28 +8,26 @@
   const text = (tag, value, cls) => h(tag, { text: value, class: cls || "" });
   const STORE = "resqly-academy-v1";
   const PRACTICE_SIZE = 10;
+  // XP for the academy-wide rating, in line with the courses.
+  const XP_RIGHT = 2;
+  const XP_DAILY = 10;
+  const XP_DAILY_PERFECT = 5;
+  const profile = () => window.ResqlyProfile;
   const WEEKDAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
 
-  /* Decorative only: an idealised trace and an abstract sound field, no findings. */
+  /* Decorative course previews, not diagnostic images. */
   const BEAT = "h18q8-12 16 0h10l4 5 7-46 7 52 4-11h14q12-18 24 0h24";
   const EKG_ART =
     '<svg viewBox="0 0 640 124" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
     '<path class="academy-trace" pathLength="1" d="M0 68' +
     BEAT.repeat(5) +
     '"/></svg>';
-  const SONO_ART =
-    '<svg viewBox="0 0 640 124" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
-    '<defs><linearGradient id="academy-beam" x2="0" y2="1"><stop stop-color="#5cf0d7" stop-opacity=".42"/>' +
-    '<stop offset="1" stop-color="#5cf0d7" stop-opacity=".05"/></linearGradient></defs>' +
-    '<path d="M300 30L194 124H446L340 30Z" fill="url(#academy-beam)"/>' +
-    '<g fill="none" stroke="#5cf0d7" stroke-width="2" stroke-linecap="round" opacity=".6">' +
-    '<path d="M282 52Q320 65 358 52M258 74Q320 94 382 74M234 96Q320 123 406 96"/></g>' +
-    '<rect x="292" y="12" width="56" height="22" rx="8" fill="#e8f4f8"/>' +
-    '<circle cx="304" cy="23" r="3" fill="#12b3a6"/></svg>';
+  const XRAY_ART = '<svg viewBox="0 0 640 124" aria-hidden="true"><g fill="#d8e4ff" stroke="#91a9dc" stroke-width="3" transform="translate(255 -30) rotate(20 65 90)"><path d="M35 0Q20 25 37 42L45 88 65 98 55 56Q74 28 57 0Z"/><path d="M48 106L70 116 85 162Q110 184 94 205L74 209Q50 188 65 168Z"/><path d="M90 0L100 92 111 100 115 0ZM103 112L113 122 136 215 126 219Z"/></g><circle cx="321" cy="67" r="24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-dasharray="4 5"/></svg>';
 
   const COURSES = [
     {
       app: "ekg",
+      store: "ekg-lernen-v1",
       icon: "💓",
       title: "EKG lernen",
       sub: "Vom ersten Ausschlag bis zum Infarkt-EKG",
@@ -41,16 +39,17 @@
       colors: ["#ff4d6d", "#d92e50", "#ffe8ec"],
     },
     {
-      app: "sono",
+      app: "roentgen",
+      store: "roentgen-learning-v1",
       icon: "🩻",
-      title: "Sono lernen",
-      sub: "Von den Grundlagen bis zum Ultraschallbild",
-      desc: "Sechs Module mit kurzen Lektionen, Beispielen, Originalclips und kleinen Übungen.",
-      tags: ["Lernpfad", "Sechs Module", "Wissensfragen"],
-      cta: "Zum Sono-Kurs",
-      button: "btn wide",
-      art: SONO_ART,
-      colors: ["#12b3a6", "#0a8d83", "#e2f7f5"],
+      title: "Röntgen lernen",
+      sub: "Bilder lesen. Frakturen erkennen.",
+      desc: "Trainiere deinen Blick an echten Röntgenbildern: systematisch analysieren, Bruchstellen finden und Befunde beschreiben. Mit kurzen Lektionen, Herzen und XP.",
+      tags: ["12 Lektionen", "Echte Röntgenbilder", "Fraktur-Trainer"],
+      cta: "Zum Röntgen-Kurs",
+      button: "btn violet wide",
+      art: XRAY_ART,
+      colors: ["#7c5cff", "#5c3fd4", "#eee9ff"],
     },
   ];
   const STEPS = [
@@ -67,7 +66,7 @@
     [
       "🔓",
       "Überall weiterlernen",
-      "Mit einem Konto bleiben Serie und Lernstand in Academy, EKG und Sono verfügbar.",
+      "Jede Lektion und jedes Quiz bringt XP für dein gemeinsames Level — mit Konto auf allen Geräten.",
     ],
   ];
   const NAV = [
@@ -95,7 +94,6 @@
   }
   const today = () => Q.dayKey(new Date());
   let leave = null; // tears down the running quiz, if any
-  const stats = h("div", { class: "academy-stats" });
 
   /* ------------------------------------------------------------- building */
 
@@ -146,6 +144,7 @@
           h("div", {}, [text("h3", c.title), text("p", c.sub)]),
         ]),
         text("p", c.desc, "academy-desc"),
+        courseProgress(c),
         h(
           "div",
           { class: "taglist" },
@@ -158,6 +157,62 @@
     card.style.setProperty("--u-dk", c.colors[1]);
     card.style.setProperty("--u-lt", c.colors[2]);
     return card;
+  }
+
+  function courseProgress(c) {
+    let done = 0;
+    try {
+      done = Object.keys(JSON.parse(localStorage.getItem(c.store))?.done || {}).length;
+    } catch (_) {
+      /* nothing stored yet */
+    }
+    const xp = profile()?.summary().bySource[c.app] || 0;
+    return text(
+      "p",
+      done || xp
+        ? (done === 1 ? "1 Lektion" : done + " Lektionen") + " abgeschlossen · " + xp + " XP"
+        : "Noch nicht begonnen",
+      "academy-course-progress",
+    );
+  }
+
+  /* The academy-wide rating every course feeds: level, streak, daily goal. */
+  function progressCard() {
+    const s = profile()?.summary();
+    if (!s) return null;
+    const { n, title, into, span } = s.level;
+    const percent = Math.round((into / span) * 100);
+    const goal = Math.min(100, Math.round((s.today / s.goal) * 100));
+    const part = (label, xp) =>
+      h("li", {}, [text("span", label), text("b", xp + " XP")]);
+    return h("section", { class: "card academy-progress", "aria-label": "Dein Fortschritt in der Academy" }, [
+      h("div", { class: "academy-progress-level" }, [
+        h("div", { class: "academy-level-badge", "aria-hidden": "true" }, [text("span", "LEVEL"), text("b", String(n))]),
+        h("div", {}, [
+          text("span", "DEIN FORTSCHRITT", "academy-eyebrow"),
+          text("h2", "Level " + n + " · " + title),
+          meter(percent, "Fortschritt bis Level " + (n + 1)),
+          text("p", s.xp + " XP gesamt · noch " + (span - into) + " XP bis Level " + (n + 1)),
+        ]),
+      ]),
+      h("div", { class: "academy-progress-facts" }, [
+        h("div", {}, [
+          text("span", "SERIE", "academy-eyebrow"),
+          text("b", "🔥 " + (s.streak === 1 ? "1 Tag" : s.streak + " Tage")),
+          text("p", s.today ? "Heute schon gelernt" : "Heute lernen, um die Serie zu halten"),
+        ]),
+        h("div", {}, [
+          text("span", "TAGESZIEL", "academy-eyebrow"),
+          text("b", "⭐ " + Math.min(s.today, s.goal) + " / " + s.goal + " XP"),
+          meter(goal, "Tagesziel"),
+        ]),
+        h("ul", { class: "academy-progress-parts" }, [
+          part("EKG", s.bySource.ekg),
+          part("Röntgen", s.bySource.roentgen),
+          part("Quiz", s.bySource.academy),
+        ]),
+      ]),
+    ]);
   }
 
   function themeCard(theme, index) {
@@ -234,7 +289,7 @@
         }),
         h("span", { class: "stat fire" }, [
           h("span", { class: "ic", text: "🔥", "aria-hidden": "true" }),
-          text("span", run === 1 ? "1 Tag in Folge" : run + " Tage in Folge"),
+          text("span", "Quiz-Serie: " + (run === 1 ? "1 Tag" : run + " Tage")),
         ]),
       ]),
     ]);
@@ -265,9 +320,10 @@
         text("h1", "Verstehen — Schritt für Schritt"),
         text(
           "p",
-          "Jeden Tag ein Quiz zu einem Thema, dazu Themen-Quiz mit Erklärungen und interaktive Kurse für EKG und Sonographie.",
+          "Jeden Tag ein Quiz zu einem Thema, dazu Themen-Quiz mit Erklärungen und interaktive Kurse für EKG und Röntgen.",
         ),
       ]),
+      progressCard(),
     ];
     if (ready()) {
       // Themes the learner knows least come first; ties keep the file order.
@@ -294,7 +350,7 @@
     kids.push(
       h("div", { class: "sec-head" }, [
         text("h2", "Deine Kurse"),
-        text("span", "Zwei Lernpfade, ein Prinzip"),
+        text("span", "Zwei Lernpfade, ein gemeinsames Level"),
       ]),
       h("div", { class: "academy-courses" }, COURSES.map(courseCard)),
       h("div", { class: "sec-head" }, [text("h2", "So lernst du")]),
@@ -423,7 +479,10 @@
         }
         checked = true;
         const ok = order[picked] === q.answer;
-        if (ok) correct++;
+        if (ok) {
+          correct++;
+          profile()?.award("academy", XP_RIGHT);
+        }
         picks[q.id] = order[picked];
         Q.record(state, q.id, ok);
         save();
@@ -488,7 +547,9 @@
         text("h1", result.correct + " von " + result.total + " richtig"),
         text("p", options.title + " · " + theme.name),
         h("div", { class: "done-stats" }, [
-          stat("Serie", Q.streak(state, today()) + " 🔥", "#ff8a3d"),
+          result.xp != null
+            ? stat("Erfahrung", "+" + result.xp + " XP", "#ff8a3d")
+            : stat("Serie", (profile()?.summary().streak || 0) + " 🔥", "#ff8a3d"),
           stat("Thema", Q.mastery(state, theme.questions).percent + " %", "#7c5cff"),
           stat("Wissens-Score", all.percent + " %", "#35c759"),
         ]),
@@ -530,9 +591,9 @@
           picks: outcome.picks,
         });
         save();
-        topStats();
+        const bonus = profile()?.award("academy", XP_DAILY + (outcome.correct === outcome.total ? XP_DAILY_PERFECT : 0)) || 0;
         if (outcome.correct === outcome.total) UI.Sound.win();
-        result(stored);
+        result({ ...stored, xp: outcome.correct * XP_RIGHT + bonus });
       },
     });
   }
@@ -554,7 +615,7 @@
           title: "Themen-Quiz",
           theme,
           questions,
-          result: outcome,
+          result: { ...outcome, xp: outcome.correct * XP_RIGHT },
           actions: [
             h("button", { class: "btn violet", type: "button", text: "Weiter üben", onclick: () => viewTheme(id) }),
             h("a", { class: "btn gray", href: "#/themen", text: "Alle Themen" }),
@@ -566,17 +627,6 @@
 
   /* ----------------------------------------------------------------- shell */
 
-  function topStats() {
-    const run = Q.streak(state, today());
-    stats.replaceChildren(
-      h("a", { class: "stat fire", href: "#/tagesquiz", title: "Quiz des Tages: Tage in Folge" }, [
-        h("span", { class: "ic", text: "🔥", "aria-hidden": "true" }),
-        text("span", String(run)),
-        text("span", run === 1 ? " Tag in Folge" : " Tage in Folge", "sr-only"),
-      ]),
-    );
-  }
-
   function route() {
     if (leave) leave();
     leave = null;
@@ -584,7 +634,6 @@
     const view = name === "quiz" ? "themen" : NAV.some(([r]) => r === name) ? name : "home";
     for (const link of document.querySelectorAll("#nav a"))
       link.classList.toggle("on", link.dataset.r === view);
-    topStats();
     scrollTo(0, 0);
     if (name === "tagesquiz") viewDaily();
     else if (name === "themen") viewThemes();
@@ -592,7 +641,7 @@
     else viewHome();
   }
 
-  // The academy page ships without bottom navigation and stats slot.
+  // The academy page ships without bottom navigation; the stats come from bootstrap.js.
   document.body.append(
     h("nav", { class: "nav", id: "nav", "aria-label": "Hauptnavigation" }, [
       h(
@@ -607,7 +656,6 @@
       ),
     ]),
   );
-  document.querySelector(".topbar-in").append(stats);
   window.addEventListener("hashchange", route);
   route();
   fetch(resqlyAssetRoot + "assets/data/fragen.csv")

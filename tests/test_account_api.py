@@ -89,6 +89,39 @@ class AccountAPITest(unittest.TestCase):
         self.api('account/register', 'POST',
                  {'email': 'native@example.org', 'password': 'native-secret-123'}, status=409)
 
+    def test_roentgen_progress_sync_preserves_completion_and_latest_attempts(self):
+        self.api('account/register', 'POST',
+                 {'email': 'xray@example.org', 'password': 'xray-secret-123'}, 201)
+        self.api('progress/roentgen', 'PUT', {
+            'version': 1, 'done': {'bildstart': {'best': 100}}, 'xp': 15,
+            'streak': 1, 'lastDay': '2026-11-01',
+            'answers': {'bildstart-start-check': {'n': 2, 'last': True}}})
+        result, _ = self.api('progress/roentgen', 'PUT', {
+            'version': 1, 'done': {'systematik': {'best': 67}}, 'xp': 10,
+            'streak': 2, 'lastDay': '2026-11-02',
+            'answers': {'bildstart-start-check': {'n': 1, 'last': False},
+                        'systematik-reading-order': {'n': 1, 'last': False}}})
+        data = result['data']
+        self.assertEqual({'bildstart', 'systematik'}, set(data['done']))
+        self.assertEqual(15, data['xp'])
+        self.assertEqual(2, data['streak'])
+        self.assertTrue(data['answers']['bildstart-start-check']['last'])
+        self.assertFalse(data['answers']['systematik-reading-order']['last'])
+        remote, _ = self.api('progress/roentgen')
+        self.assertEqual(data, remote['data'])
+
+    def test_profile_sync_keeps_the_highest_xp_and_every_learning_day(self):
+        self.api('account/register', 'POST',
+                 {'email': 'profile@example.org', 'password': 'profile-secret-123'}, 201)
+        self.api('progress/profile', 'PUT', {
+            'version': 1, 'xp': {'ekg': 40, 'roentgen': 15},
+            'days': {'2026-11-01': 40, '2026-11-02': 15}})
+        result, _ = self.api('progress/profile', 'PUT', {
+            'version': 1, 'xp': {'ekg': 30, 'academy': 6, 'other': 99},
+            'days': {'2026-11-02': 20, '2026-11-03': 6, 'bad': 5}})
+        self.assertEqual({'version': 1, 'xp': {'ekg': 40, 'roentgen': 15, 'academy': 6},
+                          'days': {'2026-11-01': 40, '2026-11-02': 20, '2026-11-03': 6}}, result['data'])
+
     def test_repeated_wrong_passwords_are_limited(self):
         self.api('account/register', 'POST',
                  {'email': 'limited@example.org', 'password': 'correct-secret-123'}, 201)
