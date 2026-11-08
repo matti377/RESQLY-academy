@@ -76,6 +76,9 @@ test('production EKG host can reach Röntgen on its existing domain', async ({ p
   await expect(page).toHaveURL('https://ekg.resqly.lu/roentgen/#/pfad');
   await expect(page).toHaveTitle(/Röntgen by Resqly/);
   await expect(page.locator('h1')).toContainText('Röntgen verstehen');
+  await page.locator('.application-switcher').getByRole('link', { name: 'Start', exact: true }).click();
+  await expect(page).toHaveURL('https://ekg.resqly.lu/?app=academy#/home');
+  await expect(page.locator('.academy-course')).toHaveCount(3);
   await page.unrouteAll({ behavior: 'wait' });
 });
 test('direct file preview works for the new course and hides the archived course', async ({ page }) => {

@@ -319,6 +319,26 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return os.path.join(HERE, course, 'index.html')
         return super().translate_path(path)
 
+    def send_head(self):
+        # Only application entry pages, the course PDF and public assets are
+        # served. Resolve symlinks before checking this allowlist.
+        root = os.path.realpath(HERE)
+        target = os.path.realpath(self.translate_path(self.path))
+        if os.path.isdir(target):
+            target = os.path.realpath(os.path.join(target, 'index.html'))
+        relative = os.path.relpath(target, root)
+        parts = relative.split(os.sep)
+        entry_pages = {'index.html', 'EKG-Skript.pdf'} | {
+            os.path.join(course, 'index.html')
+            for course in ('ekg', 'roentgen', 'anatomie', 'sono')
+        }
+        allowed = (relative in entry_pages or
+                   (parts[0] == 'assets' and all(not part.startswith('.') for part in parts)))
+        if not allowed or not os.path.isfile(target):
+            self.send_error(404, 'File not found')
+            return None
+        return super().send_head()
+
     # ------------------------------------------------------------- Antwort
 
     def send_json(self, obj, status=200, extra_headers=None):

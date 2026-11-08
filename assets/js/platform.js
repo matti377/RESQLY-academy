@@ -19,6 +19,9 @@
     if (location.hostname.toLowerCase() === "sono.resqly.lu" ||
         location.hostname.toLowerCase() === "sono.localhost" ||
         (new URLSearchParams(location.search).get("app") === "sono" && !courseHost(location))) return "hidden";
+    // An explicit academy entry works on an existing course domain, without
+    // needing DNS and a separate reverse-proxy host for academy.resqly.lu.
+    if (new URLSearchParams(location.search).get("app") === "academy") return null;
     const host = courseHost(location);
     if (host) return host;
     const override = new URLSearchParams(location.search).get("app");
@@ -40,7 +43,7 @@
   // so from there home is the academy domain.
   function homeURL(location, from) {
     if (location.protocol === "file:") return (known(from) ? "../" : "") + "index.html#/home";
-    if (courseHost(location)) return "https://academy.resqly.lu/#/home";
+    if (courseHost(location)) return "/?app=academy#/home";
     return "/#/home";
   }
   // Where an old entry point should go instead, keeping the requested route.

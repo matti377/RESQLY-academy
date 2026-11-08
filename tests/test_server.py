@@ -195,6 +195,18 @@ class ApplicationRoutingTest(unittest.TestCase):
                 urlopen(self.base + path)
             self.assertEqual(error.exception.code, 404)
 
+    def test_public_allowlist_keeps_course_pages_available_and_private_files_hidden(self):
+        for path in ('/ekg/index.html', '/roentgen/index.html', '/anatomie/index.html',
+                     '/anatomie/training', '/assets/js/anatomy/asset-manifest.js',
+                     '/assets/media/anatomy/skeleton.glb'):
+            with self.subTest(public=path), urlopen(Request(self.base + path, method='HEAD')) as response:
+                self.assertEqual(response.status, 200)
+        for path in ('/server.py', '/account_store.py', '/deploy.sh', '/.git/config',
+                     '/assets/', '/assets/js/', '/ekg/server.py', '/docs/anatomy/README.md'):
+            with self.subTest(private=path), self.assertRaises(HTTPError) as error:
+                urlopen(self.base + path)
+            self.assertEqual(error.exception.code, 404)
+
 
 if __name__ == '__main__':
     unittest.main()

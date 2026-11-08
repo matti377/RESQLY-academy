@@ -8,6 +8,8 @@ test('academy remains the root; EKG and Röntgen have explicit course entries', 
   assert.equal(P.legacyURL(loc('http://localhost/?app=roentgen')), '/roentgen/#/pfad');
   assert.equal(P.legacyURL(loc('https://roentgen.resqly.lu/')), '/roentgen/#/pfad');
   assert.equal(P.legacy(loc('https://ekg.resqly.lu/?app=roentgen')), 'ekg');
+  assert.equal(P.legacyURL(loc('https://ekg.resqly.lu/?app=academy#/home')), null);
+  assert.equal(P.legacyURL(loc('https://roentgen.resqly.lu/?app=academy#/themen')), null);
 });
 test('Sono entries return to academy, including old domains and file previews', () => {
   assert.equal(P.legacyURL(loc('https://sono.resqly.lu/?app=ekg#/home')), 'https://academy.resqly.lu/');
@@ -36,7 +38,7 @@ test('course deep links, empty folders and hash precedence', () => {
 });
 test('every page links home to the academy start page', () => {
   assert.equal(P.homeURL(loc('http://localhost/ekg/'), 'ekg'), '/#/home');
-  assert.equal(P.homeURL(loc('https://ekg.resqly.lu/ekg/'), 'ekg'), 'https://academy.resqly.lu/#/home');
+  assert.equal(P.homeURL(loc('https://ekg.resqly.lu/ekg/'), 'ekg'), '/?app=academy#/home');
   assert.equal(P.homeURL(loc('file:///tmp/roentgen/index.html'), 'roentgen'), '../index.html#/home');
   assert.equal(P.homeURL(loc('file:///tmp/index.html'), 'academy'), 'index.html#/home');
 });
