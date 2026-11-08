@@ -26,6 +26,19 @@
 
   const COURSES = [
     {
+      app: "anatomie",
+      store: "resqly-anatomy-v1",
+      icon: "🦴",
+      title: "Anatomie lernen",
+      sub: "Knochen für Knochen. Den Körper verstehen.",
+      desc: "Erkunde ein interaktives 3D-Skelett. Frage dich selbst ab, finde benannte Knochen und setze deine persönliche Bestzeit — am ganzen Skelett oder in einer Region.",
+      tags: ["3D-Skelett", "5 Regionen", "3 Trainingsmodi"],
+      cta: "Zur Anatomie",
+      button: "btn wide",
+      art: '<svg viewBox="0 0 640 124" aria-hidden="true"><g transform="translate(320 17)" stroke="#e9e2cf" stroke-width="5" stroke-linecap="round" fill="none"><ellipse cy="4" rx="13" ry="16"/><path d="M0 21v64M-24 29L0 24l24 5M-24 29l-8 37M24 29l8 37M-15 85l-5 41M15 85l5 41M-17 80q17 17 34 0"/><path d="M-6 33q-29-3-12 8l12 4M6 33q29-3 12 8L6 45M-6 45q-29-3-12 8l12 4M6 45q29-3 12 8L6 57M-6 57q-25-3-9 7l9 3M6 57q25-3 9 7L6 67" stroke-width="3"/></g><circle cx="320" cy="60" r="49" stroke="#3dd7bd" stroke-opacity=".25" fill="none"/><path d="M220 60h35M385 60h35" stroke="#3dd7bd" stroke-width="2"/></svg>',
+      colors: ["#12b3a6", "#0a8d83", "#e2f7f5"],
+    },
+    {
       app: "ekg",
       store: "ekg-lernen-v1",
       icon: "💓",
@@ -160,6 +173,11 @@
   }
 
   function courseProgress(c) {
+    if (c.app === "anatomie") {
+      let known = 0;
+      try { known = Object.values(JSON.parse(localStorage.getItem(c.store))?.known || {}).filter(v => v === true).length; } catch (_) { /* No local progress yet. */ }
+      return text("p", known ? known + " Lernziele zuletzt gewusst" : "Bereit für deinen ersten Knochen?", "academy-course-progress");
+    }
     let done = 0;
     try {
       done = Object.keys(JSON.parse(localStorage.getItem(c.store))?.done || {}).length;

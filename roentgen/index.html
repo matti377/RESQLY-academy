@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script>
 const resqlyAssetRoot = location.protocol === "file:" ? "../" : "/";
-for (const file of ["style.css?v=31", "roentgen.css?v=3"]) {
+for (const file of ["style.css?v=32", "roentgen.css?v=3"]) {
   const sheet = document.createElement("link");
   sheet.rel = "stylesheet"; sheet.href = resqlyAssetRoot + "assets/css/" + file;
   document.head.append(sheet);
@@ -29,10 +29,10 @@ for (const file of ["style.css?v=31", "roentgen.css?v=3"]) {
 <noscript>Bitte JavaScript aktivieren, um den interaktiven Kurs zu verwenden.</noscript>
 <script>
 const platformScript = document.createElement("script");
-platformScript.src = resqlyAssetRoot + "assets/js/platform.js?v=3";
+platformScript.src = resqlyAssetRoot + "assets/js/platform.js?v=4";
 platformScript.onload = function () {
   const script = document.createElement("script");
-  script.src = resqlyAssetRoot + "assets/js/bootstrap.js?v=5";
+  script.src = resqlyAssetRoot + "assets/js/bootstrap.js?v=8";
   document.body.append(script);
 };
 platformScript.onerror = function () { document.getElementById("app").textContent = "Der Kurs konnte nicht geladen werden. Bitte neu laden."; };

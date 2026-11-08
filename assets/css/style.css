@@ -986,3 +986,10 @@ main { padding: 22px 0 calc(var(--nav-h) + 34px); }
   .resqly-stats { gap: 3px; }
   .resqly-stats .stat.level { display: none; }
 }
+/* Four course links and the account control also fit narrow phones. */
+@media (max-width: 380px) {
+  .application-switcher a { padding: 7px 4px; font-size: 10px; }
+  .resqly-stats { display: none; }
+  .topbar-in { gap: 4px; }
+  .account-trigger { padding: 7px 5px; font-size: 10px; }
+}

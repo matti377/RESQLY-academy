@@ -19,7 +19,7 @@ function walk(dir) {
 }
 const output = path.join(root, "dist");
 fs.mkdirSync(output, { recursive: true });
-for (const file of ["index.html", "ekg", "roentgen", "sono", "assets", "EKG-Skript.pdf"])
+for (const file of ["index.html", "ekg", "roentgen", "anatomie", "sono", "assets", "EKG-Skript.pdf"])
   fs.cpSync(path.join(root, file), path.join(output, file), {
     recursive: true,
   });

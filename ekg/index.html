@@ -14,7 +14,7 @@
 // Root-relative over HTTP so deep links like /ekg/labor still find the assets.
 const resqlyAssetRoot = location.protocol === "file:" ? "../" : "/";
 const sharedStyle = document.createElement("link");
-sharedStyle.rel = "stylesheet"; sharedStyle.href = resqlyAssetRoot + "assets/css/style.css?v=31";
+sharedStyle.rel = "stylesheet"; sharedStyle.href = resqlyAssetRoot + "assets/css/style.css?v=32";
 document.head.append(sharedStyle);
 </script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💓</text></svg>">
@@ -53,10 +53,10 @@ document.head.append(sharedStyle);
 <noscript>Bitte JavaScript aktivieren, um den interaktiven Kurs zu verwenden.</noscript>
 <script>
 const platformScript = document.createElement("script");
-platformScript.src = resqlyAssetRoot + "assets/js/platform.js?v=3";
+platformScript.src = resqlyAssetRoot + "assets/js/platform.js?v=4";
 platformScript.onload = function () {
   const bootstrapScript = document.createElement("script");
-  bootstrapScript.src = resqlyAssetRoot + "assets/js/bootstrap.js?v=5";
+  bootstrapScript.src = resqlyAssetRoot + "assets/js/bootstrap.js?v=8";
   document.body.append(bootstrapScript);
 };
 platformScript.onerror = function () { document.getElementById("app").textContent = "Die Anwendung konnte nicht geladen werden. Bitte neu laden."; };

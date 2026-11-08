@@ -2,9 +2,9 @@
   "name": "resqly-academy",
   "version": "1.0.0",
   "private": true,
-  "description": "Dependency-free EKG and Röntgen learning applications; Node tooling is for validation only.",
+  "description": "Resqly Academy: EKG, Röntgen and interactive anatomy learning; Node tooling is for validation only.",
   "scripts": {
-    "test": "node --test tests/platform.test.cjs tests/sono.test.cjs tests/academy-quiz.test.cjs tests/roentgen.test.cjs tests/profile.test.cjs",
+    "test": "node --test tests/platform.test.cjs tests/sono.test.cjs tests/academy-quiz.test.cjs tests/roentgen.test.cjs tests/profile.test.cjs tests/anatomy.test.cjs",
     "test:browser": "playwright test",
     "validate:medical": "node scripts/validate-medical.cjs",
     "validate:publication": "node scripts/validate-medical.cjs --publication",

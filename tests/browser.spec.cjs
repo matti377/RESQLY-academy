@@ -2,12 +2,12 @@ const { test, expect } = require('@playwright/test');
 test.beforeEach(async ({ page }) => {
   await page.route('https://fonts.googleapis.com/**', route => route.abort());
 });
-test('academy offers EKG and Röntgen and never exposes Sono', async ({ page }) => {
+test('academy offers EKG, Röntgen and anatomy and never exposes Sono', async ({ page }) => {
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto('/');
   await expect(page).toHaveTitle(/Resqly Academy/);
-  await expect(page.locator('.academy-course')).toHaveCount(2);
-  await expect(page.locator('.application-switcher a')).toHaveText(['Start', 'EKG', 'Röntgen']);
+  await expect(page.locator('.academy-course')).toHaveCount(3);
+  await expect(page.locator('.application-switcher a')).toHaveText(['Start', 'EKG', 'Röntgen', 'Anatomie']);
   await expect(page.locator('.application-switcher a[aria-current]')).toHaveText('Start');
   await expect(page.locator('.brand')).toContainText('Resqly Academy');
   await expect(page.locator('body')).not.toContainText(/sono|sonographie/i);
@@ -91,5 +91,5 @@ test('direct file preview works for the new course and hides the archived course
   await expect.poll(() => page.locator('.xr-film img').evaluate(i => i.naturalWidth)).toBeGreaterThan(0);
   await page.goto(url + '?app=sono#/home');
   await expect(page).toHaveURL(url);
-  await expect(page.locator('.academy-course')).toHaveCount(2);
+  await expect(page.locator('.academy-course')).toHaveCount(3);
 });

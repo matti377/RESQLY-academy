@@ -300,13 +300,15 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         # 404 responses (also works for HEAD).
         parts = urlparse(path).path.strip('/').split('/')
         course = None
-        if parts[0] in ('sono', 'ekg', 'roentgen'):
+        if parts[0] in ('sono', 'ekg', 'roentgen', 'anatomie'):
             course, parts = parts[0], parts[1:]
         ekg = {'pfad', 'trainer', 'bibliothek', 'labor', 'ableitungen',
                'challenge'}
         simple = ekg | {'home', 'faelle', 'wissen', 'quellen', 'methodik',
                         'simulator', 'atlas'}
         detail = {'lektion', 'modul', 'quiz', 'fall', 'simulator', 'atlas', 'runde'}
+        if course == 'anatomie' and len(parts) == 1 and parts[0] in ('training', 'atlas', 'bestenliste'):
+            return os.path.join(HERE, course, 'index.html')
         is_route = ((len(parts) == 1 and parts[0] in simple) or
                     (len(parts) == 2 and parts[0] in detail and
                      parts[1] and all(c.isalnum() or c == '-' for c in parts[1])))

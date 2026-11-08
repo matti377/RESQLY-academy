@@ -91,5 +91,5 @@ test("a missing question bank leaves the course links usable", async ({
   await expect(page.locator(".pill-note")).toContainText(
     "konnten nicht geladen werden",
   );
-  await expect(page.locator(".academy-course")).toHaveCount(2);
+  await expect(page.locator(".academy-course")).toHaveCount(3);
 });

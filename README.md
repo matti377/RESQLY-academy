@@ -1,7 +1,22 @@
 # Resqly Academy
 
-Interaktive Kurse für EKG und Röntgen auf Deutsch — aufgebaut wie eine
+Interaktive Kurse für EKG, Röntgen und Anatomie auf Deutsch — aufgebaut wie eine
 Sprachlern-App: kurze Lektionen, ein Lernpfad mit Freischaltung, Herzen, XP und Streak.
+
+## Anatomie: Knochen in 3D
+
+Neu unter **`/anatomie/`** oder `anatomie/index.html`: ein dreh- und zoombares,
+anatomisches 3D-Skelett aus Écorché / BodyParts3D mit 198 benannten Knochen-Meshes
+und 88 Lernzielen. Die importierten Knochenformen werden unverändert verwendet.
+Freies Abfragen mit Selbsteinschätzung und ausblendbaren gewussten Knochen,
+Namen-zu-Knochen-Training mit Fehlerwiederholung und ein Zeitmodus mit
+persönlicher Bestenliste. Alle Modi lassen sich am ganzen Skelett oder in fünf
+Körperregionen üben. Dazu ein Knochenatlas mit deutschen und anatomischen Namen.
+
+Fortschritt und Bestenliste bleiben lokal in diesem Browser. Three.js und
+das importierte Modell sind lokal gebündelt; es werden keine externen 3D-Dienste benötigt.
+Kleine Knochen sind teilweise gruppiert; es werden nicht alle 206 Knochen
+einzeln geprüft. [Bedienung, Umfang, Quellen und Dateikarte](docs/anatomy/README.md).
 
 ## Starten
 

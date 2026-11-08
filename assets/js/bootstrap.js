@@ -15,7 +15,7 @@
   const switcher = document.createElement("nav");
   switcher.className = "application-switcher";
   switcher.setAttribute("aria-label", "Bereiche der Resqly Academy");
-  for (const [name, label] of [["academy", "Start"], ["ekg", "EKG"], ["roentgen", "Röntgen"]]) {
+  for (const [name, label] of [["academy", "Start"], ["ekg", "EKG"], ["roentgen", "Röntgen"], ["anatomie", "Anatomie"]]) {
     const link = document.createElement("a");
     link.href = name === "academy" ? home : Resqly.switchURL(name, location, app);
     link.textContent = label;
@@ -81,7 +81,8 @@
     stats.remove();
   }
   const files = {
-    academy: ["ui.js", "academy/quiz.js", "academy/app.js?v=3"],
+    academy: ["ui.js", "academy/quiz.js", "academy/app.js?v=4"],
+    anatomie: ["ui.js", "vendor/three.min.js", "vendor/gltf-loader.min.js?v=2", "anatomy/asset-manifest.js?v=1", "anatomy/content.js?v=2", "anatomy/core.js?v=1", "anatomy/model.js?v=2", "anatomy/app.js?v=2"],
     roentgen: ["ui.js", "roentgen/content.js?v=3", "roentgen/core.js?v=3", "roentgen/app.js?v=4"],
     ekg: [
       "ekg.js?v=25",

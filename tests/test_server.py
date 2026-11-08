@@ -169,7 +169,10 @@ class ApplicationRoutingTest(unittest.TestCase):
                  '/labor': 'ekg', '/lektion/l1-1': 'ekg',
                  '/roentgen/': 'roentgen', '/roentgen': 'roentgen',
                  '/roentgen/lektion/bildstart': 'roentgen',
-                 '/roentgen/atlas/clavicle': 'roentgen', '/roentgen/runde/mix': 'roentgen'}
+                 '/roentgen/atlas/clavicle': 'roentgen', '/roentgen/runde/mix': 'roentgen',
+                 '/anatomie/': 'anatomie', '/anatomie': 'anatomie',
+                 '/anatomie/training': 'anatomie', '/anatomie/atlas': 'anatomie',
+                 '/anatomie/bestenliste': 'anatomie'}
         for path, app in pages.items():
             with self.subTest(path=path), urlopen(self.base + path) as response:
                 self.assertEqual(response.status, 200)
@@ -187,7 +190,7 @@ class ApplicationRoutingTest(unittest.TestCase):
                 self.assertNotIn(b'data-application="sono"', body)
 
     def test_missing_assets_and_unknown_routes_do_not_return_html_shell(self):
-        for path in ('/assets/missing.js', '/missing', '/sono/not-real', '/ekg/not-real', '/api/not-real'):
+        for path in ('/assets/missing.js', '/missing', '/sono/not-real', '/ekg/not-real', '/anatomie/not-real', '/anatomie/missing.js', '/api/not-real'):
             with self.subTest(path=path), self.assertRaises(HTTPError) as error:
                 urlopen(self.base + path)
             self.assertEqual(error.exception.code, 404)

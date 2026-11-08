@@ -6,8 +6,8 @@
 })(typeof window !== "undefined" ? window : globalThis, function () {
   "use strict";
   // Course folders, their start routes and the domains that predate the folders.
-  const domains = { ekg: "ekg.resqly.lu", roentgen: "roentgen.resqly.lu" };
-  const homes = { ekg: "pfad", roentgen: "pfad" };
+  const domains = { ekg: "ekg.resqly.lu", roentgen: "roentgen.resqly.lu", anatomie: "anatomie.resqly.lu" };
+  const homes = { ekg: "pfad", roentgen: "pfad", anatomie: "training" };
   const known = (app) => Object.prototype.hasOwnProperty.call(domains, app);
   function courseHost(location) {
     const host = location.hostname.toLowerCase();
@@ -55,8 +55,10 @@
   function route(location, app) {
     const hash = location.hash.replace(/^#\/?/, "");
     if (hash) return hash;
+    // A local file's absolute filesystem path is not an application route.
+    if (location.protocol === "file:") return homes[app] || "pfad";
     const path = location.pathname
-      .replace(/^\/(roentgen|ekg)(\/|$)/, "/")
+      .replace(/^\/(roentgen|ekg|anatomie)(\/|$)/, "/")
       .replace(/^\/|\/$/g, "");
     return path && path !== "index.html" ? path : homes[app] || "pfad";
   }
